@@ -1,0 +1,256 @@
+{% extends 'Labs/base.html' %}
+{% load static %}
+{% block header %}
+<link rel="stylesheet" href="{% static 'Labs/assets/css/style.css' %}">
+<script src="{% static 'Labs/global_assets/js/main/jquery.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/main/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/loaders/blockui.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+{% endblock header %}
+
+{% block body %}
+    <!-- <div class="page-header page-header-light">
+        <div class="page-header-content header-elements-md-inline">
+            <div class="page-title d-flex">
+                <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - Dashboard</h4>
+                <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+            </div>
+
+            <div class="header-elements d-none">
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-link btn-float text-default"><i class="icon-bars-alt text-primary"></i><span>Statistics</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+            <div class="d-flex">
+                <div class="breadcrumb">
+                    <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+                    <span class="breadcrumb-item active">Dashboard</span>
+                </div>
+
+                <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+            </div>
+        </div>
+    </div> -->
+
+       <main>
+           
+           <section class="glass my-3">
+                <div class="row">
+                    <div class="col-md-12">
+                       <div class="container-fluid">
+                            <div class="card" style="background: transparent; border: none; outline: none;">
+                                <div class="card-body">
+                                    <span style="margin: 0 0;">
+                                        <i class="icon-home5 mr-1"></i> Home / Dashboard
+                                    </span>
+                                    <span class="ml-4 activedevice" style="color: #426696;
+                    font-weight: 600;
+                    font-size: 1.5rem;
+                    opacity: 0.7;
+                    float: right;
+                    ">
+                    Active Stats <i class="icon-stats-growth"></i></span>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+                </div>
+
+                <div class="container" style="padding-left: 20px; padding-right: 20px;">
+                    <div class="row my-3">
+                            <div class="col-md-3">
+                                <div class="card single-cards text-center">
+                                    <div class="card-body">
+                                        <i class="icon-user-tie mb-2" style="font-size: 35px;"> {{testers}}</i>   
+                                        <h3>
+                                            Testers
+                                        </h3>                            
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card single-cards text-center">
+                                    <div class="card-body">
+                                        <i class="icon-user mb-2" style="font-size: 35px;"> {{patients}}</i>   
+                                        <h3>
+                                            Patients
+                                        </h3>                            
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card single-cards text-center">
+                                    <div class="card-body">
+                                        <i class="icon-lab mb-2" style="font-size: 35px;"> {{samples}}</i>   
+                                        <h3>
+                                            Samples
+                                        </h3>                            
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card single-cards text-center">
+                                    <div class="card-body">
+                                        <i class="icon-aid-kit mb-2" style="font-size: 35px;">
+                                            {{vaccinations}}
+                                        </i>   
+                                        <h3>
+                                            Vaccinations
+                                        </h3>                            
+
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="card  single-cards">
+                        <div class="card-header header-elements-inline">
+                            <h5 class="card-title">This Months Infection Analysis</h5>
+                            <div class="header-elements">
+                                <div class="list-icons">
+                                    <a class="list-icons-item" data-action="collapse"></a>
+                                    <a class="list-icons-item" data-action="reload"></a>
+                                    <a class="list-icons-item" data-action="remove"></a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="card-body">
+                            <div class="chart-container">
+                              <canvas id="overallchart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card  single-cards">
+                        <div class="card-header header-elements-inline">
+                            <h5 class="card-title">This Months Infection Per County</h5>
+                            <div class="header-elements">
+                                <div class="list-icons">
+                                    <a class="list-icons-item" data-action="collapse"></a>
+                                    <a class="list-icons-item" data-action="reload"></a>
+                                    <a class="list-icons-item" data-action="remove"></a>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="card-body">
+                            <div class="chart-container">
+                              <canvas id="overallchart2" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+           </section>
+       </main>
+       <div class="circle1"></div>
+       <div class="circle2"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% block scripts %}
+<script>
+    var ctx = document.getElementById('overallchart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for item in label %}'{{item}}',{% endfor %}],
+    datasets: [{
+        label: 'Positive Tests',
+        data: {{ data }},
+        backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 206, 86, 0.5)',
+        'rgba(75, 192, 192, 0.5)',
+        'rgba(153, 102, 255, 0.5)',
+        'rgba(255, 159, 64, 0.5)'
+        
+    ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ],
+        borderWidth: 1
+        }, 
+        {
+             label: 'Negative Tests',
+        data: {{ data2 }},
+        backgroundColor: [
+        'rgba(5, 89, 100, 1)',
+       
+        
+    ],
+        borderColor: [
+        'rgba(5, 89, 100, 1)',
+       
+    ],
+        borderWidth: 1
+        },
+    
+    
+    ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// this is the begining of bar chart
+
+var ctx = document.getElementById('overallchart2').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for item in label3 %}'{{item}}',{% endfor %}],
+    datasets: [{
+        label: 'Positive Tests',
+        data: {{ data3 }},
+        backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 206, 86, 0.5)',
+        'rgba(75, 192, 192, 0.5)',
+        'rgba(153, 102, 255, 0.5)',
+        'rgba(255, 159, 64, 0.5)'
+        
+    ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ],
+        borderWidth: 1
+        },    
+    
+    ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock scripts %}
+
+{% endblock body %}

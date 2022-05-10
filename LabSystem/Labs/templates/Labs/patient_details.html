@@ -1,0 +1,323 @@
+{% extends 'Labs/base.html' %}
+{% load static %}
+{% block header %}
+<script src="{% static 'Labs/global_assets/js/main/jquery.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/main/bootstrap.bundle.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/loaders/blockui.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/notifications/sweet_alert.min.js' %}"></script>
+
+
+<style>
+ 		@media (max-width: 768px) {
+			 .user-img{
+				 width: 200px;
+				 margin-left: auto;
+				 margin-right: auto;
+				 margin-bottom: 30px;
+			 }
+	}
+	.btn-sweet{
+		background: transparent;
+		border: none;
+	}
+	.btn-sweet:focus{
+		outline: none;
+	}
+</style>
+
+{% endblock header %}
+
+{% block body %}
+<div class="container-fluid my-4">
+	<div class="row">
+		<a href="{% url 'Labs:patient_list' %}" class="btn btn-outline-dark btn-sm ml-auto"
+			style="margin-right: 20px; margin-bottom: 10px;border-radius: 5px;">
+			<i class="icon-arrow-left15 mr-1"></i>
+			Go
+			Back</a>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header header-elements-inline" style="background-color:rgb(50,65,72);color: #fff;">
+					<h3 class="card-title"><i class="icon-user" style="font-size: 25px;"></i>
+						&nbsp;{{patient.first_name}} {{patient.last_name}}'s Profile</h3>
+					<div class="header-elements">
+						<div class="list-icons">
+							<a class="list-icons-item" data-action="reload"></a>
+							<a class="list-icons-item" data-action="remove"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-5">
+							<img src="../../static/Labs/images/user.png" class="img-fluid user-img" alt="">
+						</div>
+						<div class="col-md-7 ">
+							<div class="container-fluid">
+							<table class="ml-4">
+								<tr>
+									<td style="padding-bottom: 10px;"><b>First Name:</b></td>
+									<td style="padding-bottom: 10px;" class="pl-4">{{patient.first_name}}</td>
+								</tr>
+								<tr>
+									<td style="padding-bottom: 10px;"><b>Sur Name:</b></td>
+									<td style="padding-bottom: 10px;" class="pl-4">{{patient.last_name}}</td>
+								</tr>
+								<tr>
+									<td><b>County:</b></td>
+									<td class="pl-4">{{patient.county}}</td>
+								</tr>
+								<tr>
+									<td><b>Location:</b></td>
+									<td class="pl-4">{{patient.location}}</td>
+								</tr>
+							</table>
+							<a href="" class="btn btn-outline-dark btn-sm my-2 ml-4" style="border-radius: 5px;">
+								<i class="icon-pencil5 mr-1"></i> Edit profile</a>
+						</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-body">
+					<div class="col-md-12 align-items-center">
+						<table class="ml-4">
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-man-woman mr-1"></i> Gender:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{patient.gender}}</td>
+							</tr>
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-phone mr-1"></i> Phone:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{patient.contact}}</td>
+							</tr>
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-envelop5 mr-1"></i>
+									Email:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{patient.email}}</td>
+							</tr>
+							<tr>
+								<td><b>
+									<i class="icon-credit-card mr-1"></i>
+									Id Number:</b></td>
+								<td class="pl-4">{{patient.id_number}}</td>
+							</tr>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-12">
+			<div class="card my-3">
+				<div class="card-body">
+					<ul class="nav nav-tabs nav-tabs-bottom border-bottom-0 nav-justified">
+						<li class="nav-item"><a href="#bottom-justified-divided-tab1" class="nav-link active" data-toggle="tab"><i class="icon-lab mr-2"></i>Previous Testings</a></li>
+						<li class="nav-item"><a href="#bottom-justified-divided-tab2" class="nav-link" data-toggle="tab"> <i class="icon-aid-kit mr-2"></i> Vaccinations</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="bottom-justified-divided-tab1">
+														<div class="table-responsive">
+					<table class="table datatable-basic">
+						<thead>
+							
+								<tr>
+								<th><b>#</b></th>
+									<th><b>Sample Code</b></th>
+									<th><b>Date Taken</b></th>
+									<th><b>Status</b></th>
+									<th class="text-center"><b>Results</b></th>
+							</tr>
+														
+						</thead>
+						<tbody>
+							{% for sample in previous_testings %}
+
+
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{sample.Ref_code}}</td>
+								<td>{{sample.date_taken|timesince}} ago</td>
+								<td>
+									{% if sample.processed %}
+										<i class="icon-checkmark2" style="font-size: 20px; color: green;"></i>									  
+									{% else %}
+									<i class="icon-cross2" style="font-size: 20px; color: red;"></i>										  
+									{% endif %}
+									
+								</td>
+								<td class="text-center">
+									{% if sample.results == 'Positive' %}
+										<span class="badge badge-danger">{{sample.results}}</span>									  
+									{% else %}
+									  <span class="badge badge-success">{{sample.results}}</span>						
+									{% endif %}
+
+									
+									
+								</td>
+							</tr>
+
+							{%endfor%}
+													
+						</tbody>
+					</table>				
+							</div>
+		
+						</div>
+
+						<div class="tab-pane fade" id="bottom-justified-divided-tab2">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th><b>#</b></th>
+											<th><b>Date Of Administration</b></th>
+											<th><b>First or Second</b></th>
+											<th><b>Action</b></th>
+										</tr>
+									</thead>
+									<tbody>
+		
+										{% for vaccination in previous_vaccinations %}
+		
+										<tr>
+											<td>{{forloop.counter}}</td>
+											<td>{{vaccination.date_of_administration|date:"F Y"}}</td>
+											<td class="">
+												<span class="badge badge-warning">
+													{{vaccination.first_or_second}}
+												</span>
+												</td>
+											
+											
+											
+											<td>
+		
+												<a href="">
+													<i class="icon-eye4 ml-2" style="color:black;"></i>
+												</a>
+												<a href="">
+													<i class="icon-bin ml-2" style="color:red;"></i>
+												</a>
+											</td>
+										</tr>
+		
+										{% empty %}
+										<tr>
+											<td colspan="9">
+												<div class="alert alert-warning text-center">
+													<p>
+														<i class="icon-warning mr-3"></i> No registered Invoices genrated.
+													</p>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+		
+		
+									</tbody>
+								</table>
+							</div>
+								</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+<div id="modal_iconified" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"><i class="icon-menu7 mr-2"></i> &nbsp;Additional Info.</h5>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				<div class="alert alert-info alert-dismissible alert-styled-left border-top-0 border-bottom-0 border-right-0">
+					<span class="font-weight-semibold">What </span> is the current status?.
+					<button type="button" class="close" data-dismiss="alert">×</button>
+				</div>
+
+				<h6 class="font-weight-semibold"><i class="icon-checkmark2 mr-2" style="color:green;"></i> Option 1.</h6>
+				<p>This signifies that the Tenant is the current occupant of the house. It shows that the 
+					tenant is an active tenant.
+				</p>
+
+				<hr>
+
+				<p><i class="icon-cross2 mr-2" style="color: red;"></i>
+					This signifies that the tenant has leased the house in the past but is not current the 
+					occupant of the same house.
+				</p>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-link" data-dismiss="modal"><i class="icon-cross2 font-size-base mr-1"></i> Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% block scripts %}
+<script>
+	var SweetAlert = function () {
+
+		var _componentSweetAlert = function() {
+			if (typeof swal == 'undefined') {
+				console.warn('Warning - sweet_alert.min.js is not loaded.');
+				return;
+			}
+			var swalInit = swal.mixin({
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-light'
+            });
+			$('#sweet_warning').on('click', function() {
+            swalInit({
+                title: 'You are about to terminate this Lease. Are you Sure?',
+                text: 'Note that this action is critical!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Proceed!',
+				position: 'top',
+				
+            });
+        });
+
+		};
+		return {
+        initComponents: function() {
+            _componentSweetAlert();
+        }
+    }
+
+	}();
+
+	document.addEventListener('DOMContentLoaded', function() {
+		SweetAlert.initComponents();
+	});
+
+
+</script>
+{% endblock scripts %}
+
+{% endblock body %}

@@ -1,0 +1,195 @@
+{% extends 'Labs/base.html' %}
+{% load static %}
+{% block header %}
+<script src="{% static 'Labs/global_assets/js/main/jquery.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/main/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/loaders/blockui.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/demo_pages/datatables_basic.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/forms/selects/select2.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/forms/styling/uniform.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/demo_pages/form_layouts.js '%}"></script>
+
+
+
+
+{% endblock header %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card my-4">
+				<div class="card-header header-elements-inline" style="background-color:rgb(50,65,72);color: #fff;">
+					<h5 class="card-title"><i class="icon-lab"></i> &nbsp;All Samples</h5>
+					<div class="header-elements">
+						<div class="list-icons">
+							<a class="list-icons-item" data-action="collapse"></a>
+							<a class="list-icons-item" data-action="reload"></a>
+							<a class="list-icons-item" data-action="remove"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card my-4">
+					<div class="card-body">
+					<ul class="nav nav-tabs nav-tabs-bottom border-bottom-0 nav-justified">
+						<li class="nav-item"><a href="#bottom-justified-divided-tab1" class="nav-link active" data-toggle="tab"><i class="icon-pulse2 mr-2"></i>Not Tested</a></li>
+						<li class="nav-item"><a href="#bottom-justified-divided-tab2" class="nav-link" data-toggle="tab"> <i class="icon-lab mr-2"></i> Processed.</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="bottom-justified-divided-tab1">
+							<div class="table-responsive">
+								<table class="table datatable-basic">
+									<thead>
+										
+											<tr>
+											<th><b>#</b></th>
+												<th><b>Patient</b></th>
+												<th><b>Sample Code</b></th>
+												<th><b>id_number</b></th>
+												<th><b>Date Taken</b></th>
+												<th><b>Action</b></th>
+										</tr>
+																	
+									</thead>
+									<tbody>
+										{% for sample in unprocessed_samples %}
+
+
+										<tr>
+											<td>{{forloop.counter}}</td>
+											<td>{{sample.patient.first_name}} {{sample.patient.last_name}}</td>
+											<td>{{sample.Ref_code}}</td>
+											<td>{{sample.patient.id_number}}</td>
+											<td>{{sample.date_taken}}</td>
+											<td class="text-center">
+												<a href="" style="float: left;" data-toggle="modal" data-target="#modal_form_vertical{{sample.pk}}">
+														<i class="icon-lab" style="color:black;"></i>
+													</a>
+													<a href="" style="margin-left: 10px;">
+														<i class="icon-bin" style="color:red; font-size: 16px;"></i>
+													</a>
+											</td>
+										</tr>
+
+										<div id="modal_form_vertical{{sample.pk}}" class="modal fade" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color:rgb(50,65,72);color: #fff; padding-top:20px; padding-bottom: 20px;">
+				<div class="container-fluid text-center">
+				<h5 class="modal-title">
+					<i class="icon-lab mr-3"></i> Update Lab Test Results For Sample : : {{sample.Ref_code}} </h5>
+				</div>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<form action="{% url 'Labs:update_sample_result' sample.id %}" method="POST">
+				{% csrf_token %}
+				<div class="modal-body">
+					<div class="alert mb-3 alert-info alert-dismissible alert-styled-left text-center border-top-0 border-bottom-0 border-right-0">
+						Notice This action is crucial. </span> 
+						<button type="button" class="close" data-dismiss="alert">×</button>
+					</div>
+	
+					<div class="form-group">
+						<div class="row">
+							<div class="col-md-8 offset-md-2" >
+								<div class="form-group">
+									<label>Results:</label>
+									<select name="result" required data-placeholder="Update Results"
+												class="form-control  form-control-select2" data-fouc>
+												<option></option>
+												<option value="Positive">Positive</option>
+												<option value="Negative">Negative</option>
+												<option value="Invalid">Invalid</option>
+									</select>
+								</div>
+							</div>
+						
+
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-dark mr-auto" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn bg-primary">Save Changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+
+										{%endfor%}
+																
+									</tbody>
+								</table>				
+							</div>
+
+		
+						</div>
+
+						<div class="tab-pane fade" id="bottom-justified-divided-tab2">
+
+							<div class="table-responsive">
+					<table class="table datatable-basic">
+						<thead>
+							
+								<tr>
+								<th><b>#</b></th>
+									<th><b>Patient</b></th>
+									<th><b>Sample Code</b></th>
+									<th><b>id_number</b></th>
+									<th><b>Date Taken</b></th>
+									<th><b>Status</b></th>
+							</tr>
+														
+						</thead>
+						<tbody>
+							{% for sample in processed_samples %}
+
+
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{sample.patient.first_name}} {{sample.patient.last_name}}</td>
+								<td>{{sample.Ref_code}}</td>
+								<td>{{sample.patient.id_number}}</td>
+								<td>{{sample.date_taken|timesince}} ago</td>
+								<td class="text-center">
+									{% if sample.results == 'Positive' %}
+										<span class="badge badge-danger">{{sample.results}}</span>									  
+									{% else %}
+									  <span class="badge badge-success">{{sample.results}}</span>						
+									{% endif %}
+
+									<a href="{% url 'Labs:patients_details' sample.patient.id %}">
+											<i class="icon-eye4" style="color:black;"></i>
+										</a>
+									
+								</td>
+							</tr>
+
+							{%endfor%}
+													
+						</tbody>
+					</table>				
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% endblock body %}

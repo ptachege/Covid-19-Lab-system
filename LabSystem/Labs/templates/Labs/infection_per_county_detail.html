@@ -1,0 +1,307 @@
+{% extends 'Labs/base.html' %}
+{% load static %}
+{% block header %}
+<script src="{% static 'Labs/global_assets/js/main/jquery.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/main/bootstrap.bundle.min.js '%}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/loaders/blockui.min.js '%}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{% static 'Labs/global_assets/js/plugins/notifications/sweet_alert.min.js' %}"></script>
+
+
+<style>
+ 		@media (max-width: 768px) {
+			 .user-img{
+				 width: 200px;
+				 margin-left: auto;
+				 margin-right: auto;
+				 margin-bottom: 30px;
+			 }
+	}
+	.btn-sweet{
+		background: transparent;
+		border: none;
+	}
+	.btn-sweet:focus{
+		outline: none;
+	}
+</style>
+
+{% endblock header %}
+
+{% block body %}
+<div class="container-fluid my-4">
+	<div class="row">
+		<a href="{% url 'Labs:infection_per_county' %}" class="btn btn-outline-dark btn-sm ml-auto"
+			style="margin-right: 20px; margin-bottom: 10px;border-radius: 5px;">
+			<i class="icon-arrow-left15 mr-1"></i>
+			Go
+			Back</a>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header header-elements-inline" style="background-color:rgb(50,65,72);color: #fff;">
+					<h3 class="card-title"><i class="icon-stats-growth" style="font-size: 25px;"></i>
+						&nbsp {{county|title }} County Stats</h3>
+					<div class="header-elements">
+						<div class="list-icons">
+							<a class="list-icons-item" data-action="reload"></a>
+							<a class="list-icons-item" data-action="remove"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card">
+                <div class="card-body">
+                        <div class="chart-container">
+                              <canvas id="overallchart4" height="60"></canvas>
+                            </div>
+                        </div>
+			</div>
+		</div>
+		
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-body">
+					<div class="col-md-12 align-items-center">
+						<table class="ml-4 table table-striped">
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-man-woman mr-1"></i> Total Tests:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{total}}</td>
+							</tr>
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-plus2 mr-1"></i> Positive Cases:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{positive}}</td>
+							</tr>
+							<tr>
+								<td style="padding-bottom: 10px;"><b>
+									<i class="icon-minus3 mr-1"></i>
+									Negative Cases:</b></td>
+								<td style="padding-bottom: 10px;" class="pl-4">{{negative}}</td>
+							</tr>
+							<tr>
+								<td><b>
+									<i class="icon-stats-growth2 mr-1"></i>
+									Infection Rate:</b></td>
+								<td class="pl-4">{{infection_rate|floatformat:"2"}} %</td>
+							</tr>
+							<tr>
+								<td><b>
+									<i class="icon-woman mr-1"></i>
+									Female Positive Cases:</b></td>
+								<td class="pl-4">{{female}} </td>
+							</tr>
+							<tr>
+								<td><b>
+									<i class="icon-man mr-1"></i>
+									Male Positive Cases:</b></td>
+								<td class="pl-4">{{male}} </td>
+							</tr>
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <div class="row">
+        <div class="col-12">
+            			<div class="card my-4">
+					<div class="card-body">
+					<ul class="nav nav-tabs nav-tabs-bottom border-bottom-0 nav-justified">
+						<li class="nav-item"><a href="#bottom-justified-divided-tab1" class="nav-link active" data-toggle="tab"><i class="icon-plus2 mr-2"></i>Positive</a></li>
+						<li class="nav-item"><a href="#bottom-justified-divided-tab2" class="nav-link" data-toggle="tab"> <i class="icon-minus3 mr-2"></i> Negative.</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="bottom-justified-divided-tab1">
+							<div class="table-responsive">
+								<table class="table datatable-basic">
+									<thead>
+										
+											<tr>
+											<th><b>#</b></th>
+												<th><b>Patient</b></th>
+												<th><b>Sample Code</b></th>
+												<th><b>id_number</b></th>
+												<th><b>Date Taken</b></th>
+										</tr>
+																	
+									</thead>
+									<tbody>
+										{% for sample in positive_cases %}
+
+
+										<tr>
+											<td>{{forloop.counter}}</td>
+											<td>{{sample.patient.first_name}} {{sample.patient.last_name}}</td>
+											<td>{{sample.Ref_code}}</td>
+											<td>{{sample.patient.id_number}}</td>
+											<td>{{sample.date_taken}}</td>
+										</tr>
+                                        
+                                        {% empty %}
+
+                                        <tr>
+                                            <td colspan="5">
+                                                <div class="alert alert-warning text-center">
+                                                <i class="icon-warning mr-1"></i> No records found
+                                                </div>
+                                            </td>
+                                        </tr>
+										{%endfor%}
+																
+									</tbody>
+								</table>				
+							</div>
+
+		
+						</div>
+
+						<div class="tab-pane fade" id="bottom-justified-divided-tab2">
+
+							<div class="table-responsive">
+					<table class="table datatable-basic">
+						<thead>
+							
+								<tr>
+								<th><b>#</b></th>
+									<th><b>Patient</b></th>
+									<th><b>Sample Code</b></th>
+									<th><b>id_number</b></th>
+									<th><b>Date Taken</b></th>
+							</tr>
+														
+						</thead>
+						<tbody>
+							{% for sample in negative_cases %}
+
+
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{sample.patient.first_name}} {{sample.patient.last_name}}</td>
+								<td>{{sample.Ref_code}}</td>
+								<td>{{sample.patient.id_number}}</td>
+								<td>{{sample.date_taken|timesince}} ago</td>
+							</tr>
+
+                            {% empty %}
+
+                            <tr>
+                                <td colspan="5">
+                                    <div class="alert alert-warning text-center">
+                                       <i class="icon-warning mr-1"></i> No records found
+                                    </div>
+                                </td>
+                            </tr>
+
+							{%endfor%}
+													
+						</tbody>
+					</table>				
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+        </div>
+    </div>
+
+</div>
+
+
+{% block scripts %}
+<script>
+	var SweetAlert = function () {
+
+		var _componentSweetAlert = function() {
+			if (typeof swal == 'undefined') {
+				console.warn('Warning - sweet_alert.min.js is not loaded.');
+				return;
+			}
+			var swalInit = swal.mixin({
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-light'
+            });
+			$('#sweet_warning').on('click', function() {
+            swalInit({
+                title: 'You are about to terminate this Lease. Are you Sure?',
+                text: 'Note that this action is critical!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Proceed!',
+				position: 'top',
+				
+            });
+        });
+
+		};
+		return {
+        initComponents: function() {
+            _componentSweetAlert();
+        }
+    }
+
+	}();
+
+	document.addEventListener('DOMContentLoaded', function() {
+		SweetAlert.initComponents();
+	});
+
+
+</script>
+
+
+<script>
+    
+var ctx = document.getElementById('overallchart4').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [{% for item in label3 %}'{{item}}',{% endfor %}],
+    datasets: [{
+        label: 'Positive Tests',
+        data: {{ data3 }},
+        backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(255, 206, 86, 0.5)',
+        'rgba(75, 192, 192, 0.5)',
+        'rgba(153, 102, 255, 0.5)',
+        'rgba(255, 159, 64, 0.5)'
+        
+    ],
+        borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+    ],
+        borderWidth: 1
+        },    
+    
+    ]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock scripts %}
+
+{% endblock body %}

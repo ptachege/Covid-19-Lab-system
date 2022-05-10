@@ -1,0 +1,69 @@
+{% extends 'Labs/base.html' %}
+{% load static %}
+{% block header %}
+<script src="{% static 'Labs/global_assets/js/main/jquery.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/main/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/loaders/blockui.min.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/demo_pages/datatables_basic.js' %}"></script>
+<script src="{% static 'Labs/global_assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+
+
+
+{% endblock header %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card my-4">
+				<div class="card-header header-elements-inline" style="background-color:rgb(50,65,72);color: #fff;">
+					<h5 class="card-title"><i class="icon-aid-kit"></i> &nbsp;All Vaccinations</h5>
+					<div class="header-elements">
+						<div class="list-icons">
+							<a class="list-icons-item" data-action="collapse"></a>
+							<a class="list-icons-item" data-action="reload"></a>
+							<a class="list-icons-item" data-action="remove"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card my-4">
+				<div class="card-body">
+					<div class="table-responsive">
+					<table class="table datatable-basic">
+						<thead>
+							
+								<tr>
+								<th><b>#</b></th>
+									<th><b>Patient</b></th>
+									<th><b>First or Second</b></th>
+									<th><b>Date of Administration</b></th>
+							</tr>
+														
+						</thead>
+						<tbody>
+							{% for vaccine  in all_vaccinations %}
+
+
+							<tr>
+								<td>{{forloop.counter}}</td>
+								<td>{{vaccine.patient.first_name}} {{vaccine.patient.last_name}}</td>
+								<td>{{vaccine.first_or_second}}</td>
+								<td>{{vaccine.date_of_administration}}</td>
+							</tr>
+
+							{%endfor%}
+													
+						</tbody>
+					</table>					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+{% block scripts %}
+{% endblock scripts %}
+
+{% endblock body %}
